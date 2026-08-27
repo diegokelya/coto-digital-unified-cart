@@ -1,0 +1,25 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fondo circular -->
+  <circle cx="256" cy="256" r="240" fill="#E31837"/>
+  
+  <!-- Carrito de compras -->
+  <g transform="translate(100, 100)">
+    <!-- Cuerpo del carrito -->
+    <path d="M 50 80 L 80 240 L 280 240 L 310 80 Z" fill="white" stroke="white" stroke-width="8"/>
+    
+    <!-- Manija -->
+    <path d="M 40 60 L 60 60 L 80 80" fill="none" stroke="white" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <!-- Ruedas -->
+    <circle cx="120" cy="280" r="20" fill="white"/>
+    <circle cx="240" cy="280" r="20" fill="white"/>
+    
+    <!-- Productos en el carrito (representados como cajas) -->
+    <rect x="100" y="120" width="60" height="60" fill="#FFD700" rx="5"/>
+    <rect x="180" y="140" width="60" height="60" fill="#FFD700" rx="5"/>
+    <rect x="140" y="100" width="50" height="50" fill="#FFA500" rx="5"/>
+  </g>
+  
+  <!-- Texto "C" estilizado (por Coto) -->
+  <text x="256" y="420" font-family="Arial, sans-serif" font-size="120" font-weight="bold" fill="white" text-anchor="middle">C</text>
+</svg>
