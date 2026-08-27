@@ -22,6 +22,7 @@ Integración completa de Coto Digital para Home Assistant. Gestiona tu carrito d
 - 🔘 **Botones**: Vaciar carrito y sincronizar con un clic
 - 📡 **Servicios**: Buscar, agregar, eliminar productos vía automatizaciones
 - 🗄️ **Base de datos local**: Persistencia SQLite integrada
+- 📱 **Dashboard automático**: Se crea en `/lovelace/coto-digital` al instalar
 
 ### Componentes adicionales
 
@@ -104,6 +105,7 @@ CREATE TABLE historial_busquedas (
    - Clic en "+ Agregar integración"
    - Buscar "Coto Digital"
    - Seguir el asistente de configuración
+   - **El dashboard se crea automáticamente en** `/lovelace/coto-digital`
 
 ### Método 2: Instalación manual
 
@@ -124,6 +126,21 @@ pip3 install flask requests
 Ver [docs/SETUP.md](docs/SETUP.md) para configuración completa de componentes standalone.
 
 ## Uso en Home Assistant
+
+### Dashboard automático
+
+Al instalar la integración, se crea automáticamente un dashboard en:
+
+**URL**: `/lovelace/coto-digital`
+
+El dashboard incluye:
+- 📊 Estadísticas del carrito (productos, unidades, total)
+- 🔘 Botones de acción (sincronizar, vaciar)
+- 📈 Gráfico histórico de totales
+- 📝 Ejemplos de servicios y automatizaciones
+
+También puedes importar el dashboard manualmente desde:
+`custom_components/coto_digital/lovelace_dashboard.yaml`
 
 ### Sensores
 
@@ -175,6 +192,16 @@ service: coto_digital.vaciar_carrito
 
 ### Automatizaciones de ejemplo
 
+La integración incluye ejemplos de automatizaciones en:
+`custom_components/coto_digital/automations_example.yaml`
+
+Incluye:
+- Recordatorio diario de compras
+- Alerta de carrito grande
+- Sincronización automática
+- Notificación al agregar productos
+- Búsqueda automática de productos favoritos
+
 #### Recordatorio de compras
 
 ```yaml
@@ -210,6 +237,11 @@ automation:
         data:
           message: "Tu carrito supera los $50.000"
 ```
+
+#### Importar automatizaciones
+
+Copiar el contenido de `automations_example.yaml` a tu archivo `automations.yaml` o crear vía UI en:
+Configuración → Automatizaciones y escenas → + → Importar desde YAML
 
 #### Dashboard Lovelace
 
