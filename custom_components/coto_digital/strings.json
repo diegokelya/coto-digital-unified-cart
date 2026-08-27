@@ -25,5 +25,26 @@
         }
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "coto_digital_productos": {
+        "name": "Productos"
+      },
+      "coto_digital_unidades": {
+        "name": "Unidades"
+      },
+      "coto_digital_total": {
+        "name": "Total"
+      }
+    },
+    "button": {
+      "sincronizar_coto_digital": {
+        "name": "Sincronizar"
+      },
+      "vaciar_carrito_coto_digital": {
+        "name": "Vaciar Carrito"
+      }
+    }
   }
 }
