@@ -1,0 +1,29 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configurar Coto Digital",
+        "description": "Configura la integración de Coto Digital",
+        "data": {
+          "name": "Nombre",
+          "update_interval": "Intervalo de actualización (segundos)"
+        }
+      }
+    },
+    "error": {
+      "already_configured": "Esta integración ya está configurada"
+    },
+    "abort": {
+      "already_configured": "Esta integración ya está configurada"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "update_interval": "Intervalo de actualización (segundos)"
+        }
+      }
+    }
+  }
+}

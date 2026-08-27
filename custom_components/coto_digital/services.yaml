@@ -1,0 +1,79 @@
+buscar_producto:
+  name: Buscar producto
+  description: Busca productos en Coto Digital
+  fields:
+    query:
+      name: Búsqueda
+      description: Término de búsqueda
+      required: true
+      example: "leche"
+      selector:
+        text:
+
+agregar_al_carrito:
+  name: Agregar al carrito
+  description: Agrega un producto al carrito
+  fields:
+    producto_id:
+      name: ID del producto
+      description: Identificador único del producto
+      required: true
+      example: "prod_123456"
+      selector:
+        text:
+    nombre:
+      name: Nombre
+      description: Nombre del producto
+      required: true
+      example: "Leche La Serenísima 1L"
+      selector:
+        text:
+    precio:
+      name: Precio
+      description: Precio unitario en ARS
+      required: true
+      example: 450.50
+      selector:
+        number:
+          min: 0
+          max: 999999
+          step: 0.01
+          mode: box
+    imagen_url:
+      name: URL de imagen
+      description: URL de la imagen del producto (opcional)
+      required: false
+      example: "https://www.cotodigital3.com.ar/images/producto.jpg"
+      selector:
+        text:
+    cantidad:
+      name: Cantidad
+      description: Cantidad de unidades
+      required: false
+      default: 1
+      example: 2
+      selector:
+        number:
+          min: 1
+          max: 999
+          mode: box
+
+eliminar_del_carrito:
+  name: Eliminar del carrito
+  description: Elimina un producto del carrito
+  fields:
+    producto_id:
+      name: ID del producto
+      description: Identificador del producto a eliminar
+      required: true
+      example: "prod_123456"
+      selector:
+        text:
+
+vaciar_carrito:
+  name: Vaciar carrito
+  description: Vacía completamente el carrito de compras
+
+sincronizar:
+  name: Sincronizar
+  description: Sincroniza los datos con Coto Digital

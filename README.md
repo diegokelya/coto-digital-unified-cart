@@ -1,15 +1,27 @@
-# Coto Digital - Sistema de Carrito Unificado
+# Coto Digital para Home Assistant
 
-Sistema completo para gestionar compras en Coto Digital con interfaz web unificada y bot de Telegram.
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
+[![GitHub Release](https://img.shields.io/github/release/diegokelya/coto-digital-unified-cart.svg)](https://github.com/diegokelya/coto-digital-unified-cart/releases)
+[![License](https://img.shields.io/github/license/diegokelya/coto-digital-unified-cart.svg)](LICENSE)
+
+Integración completa de Coto Digital para Home Assistant. Gestiona tu carrito de compras, busca productos y automatiza tus compras desde Home Assistant.
 
 ## Características
 
-- 🛒 **Carrito unificado**: Dashboard web con búsqueda y gestión de productos
-- 🤖 **Bot de Telegram**: Control remoto del carrito y pedidos
-- 🔍 **Búsqueda inteligente**: Búsqueda en tiempo real en catálogo Coto Digital
-- 📊 **Dashboard persistente**: Interfaz web en `http://192.168.68.118:8766/`
-- 🧩 **Extensión Chrome**: Importación automática de productos desde Coto Digital
-- 🔄 **Sincronización automática**: SQLite como fuente única de verdad
+### Integración Home Assistant (HACS)
+
+- 🏠 **Integración nativa**: Instalación vía HACS con config UI
+- 📊 **Sensores en tiempo real**: Total en pesos, productos y unidades
+- 🔘 **Botones**: Vaciar carrito y sincronizar con un clic
+- 📡 **Servicios**: Buscar, agregar, eliminar productos vía automatizaciones
+- 🗄️ **Base de datos local**: Persistencia SQLite integrada
+
+### Componentes adicionales
+
+- 🛒 **Dashboard web**: Interfaz web unificada (puerto 8766)
+- 🤖 **Bot de Telegram**: Control remoto del carrito
+- 🧩 **Extensión Chrome**: Importación automática desde Coto Digital
+- 🔄 **Sincronización**: Scripts automáticos de actualización
 
 ## Arquitectura
 
@@ -59,21 +71,175 @@ CREATE TABLE historial_busquedas (
 
 ## Instalación
 
-### 1. Requisitos
+### Método 1: HACS (Recomendado)
+
+#### Requisitos previos
+
+- Home Assistant 2023.1.0 o superior
+- [HACS](https://hacs.xyz/) instalado
+
+#### Pasos
+
+1. **Agregar repositorio custom a HACS**:
+   - Abrir HACS en Home Assistant
+   - Clic en los tres puntos (⋮) → "Custom repositories"
+   - URL: `https://github.com/diegokelya/coto-digital-unified-cart`
+   - Categoría: `Integration`
+   - Clic en "Add"
+
+2. **Instalar la integración**:
+   - En HACS, buscar "Coto Digital"
+   - Clic en "Download"
+   - Reiniciar Home Assistant
+
+3. **Configurar la integración**:
+   - Ir a Configuración → Dispositivos y servicios
+   - Clic en "+ Agregar integración"
+   - Buscar "Coto Digital"
+   - Seguir el asistente de configuración
+
+### Método 2: Instalación manual
+
+1. Descargar la última versión desde [Releases](https://github.com/diegokelya/coto-digital-unified-cart/releases)
+2. Descomprimir y copiar `custom_components/coto_digital` a tu directorio `custom_components/` de Home Assistant
+3. Reiniciar Home Assistant
+4. Agregar la integración desde la UI
+
+### Método 3: Componentes standalone (Dashboard + Bot)
+
+Para usar el dashboard web y bot de Telegram sin Home Assistant:
 
 ```bash
 sudo apt install python3 python3-pip sqlite3
 pip3 install flask requests
 ```
 
-### 2. Variables de entorno
+Ver [docs/SETUP.md](docs/SETUP.md) para configuración completa de componentes standalone.
+
+## Uso en Home Assistant
+
+### Sensores
+
+La integración crea automáticamente estos sensores:
+
+- `sensor.coto_digital_productos` - Cantidad de productos diferentes
+- `sensor.coto_digital_unidades` - Total de unidades
+- `sensor.coto_digital_total` - Total en pesos (ARS)
+
+### Botones
+
+- `button.vaciar_carrito_coto_digital` - Vacía el carrito
+- `button.sincronizar_coto_digital` - Sincroniza con Coto Digital
+
+### Servicios
+
+#### Buscar productos
+
+```yaml
+service: coto_digital.buscar_producto
+data:
+  query: "leche"
+```
+
+#### Agregar al carrito
+
+```yaml
+service: coto_digital.agregar_al_carrito
+data:
+  producto_id: "prod_123456"
+  nombre: "Leche La Serenísima 1L"
+  precio: 450.50
+  cantidad: 2
+```
+
+#### Eliminar del carrito
+
+```yaml
+service: coto_digital.eliminar_del_carrito
+data:
+  producto_id: "prod_123456"
+```
+
+#### Vaciar carrito
+
+```yaml
+service: coto_digital.vaciar_carrito
+```
+
+### Automatizaciones de ejemplo
+
+#### Recordatorio de compras
+
+```yaml
+automation:
+  - alias: "Recordar hacer compras"
+    trigger:
+      - platform: time
+        at: "19:00:00"
+    condition:
+      - condition: numeric_state
+        entity_id: sensor.coto_digital_productos
+        above: 0
+    action:
+      - service: notify.mobile_app_iphone_de_diego
+        data:
+          title: "Carrito Coto Digital"
+          message: >
+            Tienes {{ states('sensor.coto_digital_productos') }} productos 
+            por un total de ${{ states('sensor.coto_digital_total') }}
+```
+
+#### Alerta de carrito grande
+
+```yaml
+automation:
+  - alias: "Alerta carrito grande"
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.coto_digital_total
+        above: 50000
+    action:
+      - service: notify.mobile_app_iphone_de_diego
+        data:
+          message: "Tu carrito supera los $50.000"
+```
+
+#### Dashboard Lovelace
+
+```yaml
+type: vertical-stack
+cards:
+  - type: entities
+    title: Coto Digital
+    entities:
+      - entity: sensor.coto_digital_productos
+        name: Productos
+      - entity: sensor.coto_digital_unidades
+        name: Unidades
+      - entity: sensor.coto_digital_total
+        name: Total
+  - type: horizontal-stack
+    cards:
+      - type: button
+        entity: button.sincronizar_coto_digital
+        name: Sincronizar
+        icon: mdi:sync
+      - type: button
+        entity: button.vaciar_carrito_coto_digital
+        name: Vaciar
+        icon: mdi:delete-empty
+```
+
+## Componentes standalone
+
+### 1. Variables de entorno (solo para dashboard/bot)
 
 ```bash
 export TELEGRAM_BOT_TOKEN="tu_token_aquí"
 export TELEGRAM_CHAT_ID="406287065"
 ```
 
-### 3. Servicios systemd
+### 2. Servicios systemd (solo para dashboard/bot)
 
 ```bash
 # Copiar servicios
