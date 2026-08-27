@@ -1,25 +1,81 @@
 <svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-  <!-- Fondo circular -->
-  <circle cx="256" cy="256" r="240" fill="#E31837"/>
-  
-  <!-- Carrito de compras -->
-  <g transform="translate(100, 100)">
-    <!-- Cuerpo del carrito -->
-    <path d="M 50 80 L 80 240 L 280 240 L 310 80 Z" fill="white" stroke="white" stroke-width="8"/>
+  <defs>
+    <!-- Gradiente radial para fondo -->
+    <radialGradient id="bgGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#E31837;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#BD132D;stop-opacity:1" />
+    </radialGradient>
     
-    <!-- Manija -->
-    <path d="M 40 60 L 60 60 L 80 80" fill="none" stroke="white" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Sombra para 3D -->
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="2" dy="2" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.3"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Gradiente para carrito -->
+    <linearGradient id="cartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f0f0f0;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Fondo circular con gradiente -->
+  <circle cx="256" cy="256" r="240" fill="url(#bgGradient)"/>
+  
+  <!-- Carrito de compras principal -->
+  <g filter="url(#shadow)">
+    <!-- Cuerpo del carrito (rectángulo redondeado) -->
+    <rect x="160" y="200" width="190" height="120" rx="15" ry="15" 
+          fill="url(#cartGradient)" stroke="#2D2D2D" stroke-width="3"/>
+    
+    <!-- Líneas decorativas internas -->
+    <line x1="180" y1="230" x2="330" y2="230" stroke="#FF6B6B" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
+    <line x1="180" y1="260" x2="330" y2="260" stroke="#FF6B6B" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
+    <line x1="180" y1="290" x2="330" y2="290" stroke="#FF6B6B" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
+    
+    <!-- Manija del carrito -->
+    <rect x="130" y="180" width="40" height="140" rx="8" ry="8" 
+          fill="#ffffff" stroke="#2D2D2D" stroke-width="3"/>
+    <rect x="135" y="185" width="30" height="130" rx="6" ry="6" 
+          fill="#2D2D2D" opacity="0.2"/>
     
     <!-- Ruedas -->
-    <circle cx="120" cy="280" r="20" fill="white"/>
-    <circle cx="240" cy="280" r="20" fill="white"/>
+    <g>
+      <!-- Rueda izquierda -->
+      <circle cx="220" cy="343" r="3" fill="#000000" opacity="0.2"/> <!-- Sombra -->
+      <circle cx="220" cy="340" r="18" fill="#ffffff" stroke="#2D2D2D" stroke-width="3"/>
+      <circle cx="220" cy="340" r="15" fill="#2D2D2D" opacity="0.9"/>
+      <circle cx="220" cy="340" r="8" fill="#FF6B6B"/>
+      <circle cx="220" cy="340" r="5" fill="#ffffff"/>
+      
+      <!-- Rueda derecha -->
+      <circle cx="310" cy="343" r="3" fill="#000000" opacity="0.2"/> <!-- Sombra -->
+      <circle cx="310" cy="340" r="18" fill="#ffffff" stroke="#2D2D2D" stroke-width="3"/>
+      <circle cx="310" cy="340" r="15" fill="#2D2D2D" opacity="0.9"/>
+      <circle cx="310" cy="340" r="8" fill="#FF6B6B"/>
+      <circle cx="310" cy="340" r="5" fill="#ffffff"/>
+    </g>
     
-    <!-- Productos en el carrito (representados como cajas) -->
-    <rect x="100" y="120" width="60" height="60" fill="#FFD700" rx="5"/>
-    <rect x="180" y="140" width="60" height="60" fill="#FFD700" rx="5"/>
-    <rect x="140" y="100" width="50" height="50" fill="#FFA500" rx="5"/>
+    <!-- Ícono de verificación (check) -->
+    <circle cx="260" cy="245" r="30" fill="#4CAF50"/>
+    <path d="M 250 245 L 256 253 L 272 235" 
+          stroke="#ffffff" stroke-width="5" stroke-linecap="round" 
+          stroke-linejoin="round" fill="none"/>
+    
+    <!-- Badge "AR" (Argentina) -->
+    <rect x="340" y="140" width="120" height="35" rx="8" ry="8" 
+          fill="#ffffff" opacity="0.95"/>
+    <text x="400" y="163" font-family="Arial, sans-serif" font-size="24" 
+          font-weight="bold" fill="#E31837" text-anchor="middle">AR</text>
   </g>
   
-  <!-- Texto "C" estilizado (por Coto) -->
-  <text x="256" y="420" font-family="Arial, sans-serif" font-size="120" font-weight="bold" fill="white" text-anchor="middle">C</text>
+  <!-- Sombra del carrito en el suelo -->
+  <ellipse cx="265" cy="335" rx="90" ry="8" fill="#000000" opacity="0.15"/>
 </svg>
