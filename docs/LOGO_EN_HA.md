@@ -1,260 +1,61 @@
-# Mostrar el Logo en Home Assistant
+# Mostrar el logo en Home Assistant
 
-## Problema
-El logo muestra "**icon not available**" en Home Assistant.
+## Home Assistant 2026.3 o posterior
 
-## Solución Implementada ✅
+Las integraciones personalizadas pueden incluir sus imágenes directamente en una carpeta `brand/` dentro de la integración:
 
-### Archivos Creados
-
-```
+```text
 custom_components/coto_digital/
-└── icons/
-    ├── icon.png         (512x512, logo principal)
-    ├── icon@2x.png      (512x512, alta resolución)
-    └── README.md        (documentación)
+├── manifest.json
+└── brand/
+    ├── icon.png       # 256x256
+    └── icon@2x.png    # 512x512
 ```
 
-Home Assistant buscará automáticamente estos archivos.
+No hay que agregar ninguna propiedad `icon` al `manifest.json`. Home Assistant detecta estos archivos automáticamente y les da prioridad sobre el CDN de Brands.
 
----
+## Instalación de la corrección
 
-## Pasos para que Aparezca el Logo
+1. En HACS, abrir Coto Digital.
+2. Descargar la versión 1.4.1 o posterior.
+3. Reiniciar Home Assistant completamente.
+4. Recargar la página del navegador.
 
-### 1. Actualizar la Integración
-
-**Vía HACS**:
-```
-1. HACS → Integraciones
-2. Coto Digital → Actualizar
-3. Seleccionar última versión (incluye iconos)
-4. Descargar
-```
-
-**Manual**:
-```bash
-# Los archivos de iconos ya están en el repositorio
-# Solo actualiza normalmente y estarán incluidos
-```
-
-### 2. Reiniciar Home Assistant
+Verificación desde Terminal/SSH de Home Assistant:
 
 ```bash
-# Desde la UI
-Configuración → Sistema → Reiniciar
-
-# O desde terminal
-ha core restart
+ls -lh /config/custom_components/coto_digital/brand/
 ```
 
-### 3. Limpiar Caché del Navegador
+Deben existir `icon.png` e `icon@2x.png`.
 
-**Chrome / Edge**:
-- `Ctrl + Shift + R` (Windows/Linux)
-- `Cmd + Shift + R` (Mac)
+## Si todavía aparece “Icon not available”
 
-**Firefox**:
-- `Ctrl + F5` (Windows/Linux)
-- `Cmd + Shift + R` (Mac)
+1. Confirmar en **Configuración → Acerca de** que Home Assistant sea 2026.3 o posterior.
+2. Confirmar que el dominio sea exactamente `coto_digital`.
+3. Confirmar que la ruta sea `brand/`, no `brands/` ni `icons/`.
+4. Reiniciar Home Assistant; recargar solamente la integración puede no actualizar el frontend.
+5. Hacer una recarga forzada del navegador o probar en una ventana privada.
 
-**Safari**:
-- `Cmd + Option + R`
+No se debe borrar `.storage`, Lovelace ni otras cachés internas de Home Assistant para resolver el logo.
 
-### 4. Recargar la Integración (Opcional)
+## Home Assistant anterior a 2026.3
 
-```
-1. Configuración → Dispositivos y servicios
-2. Buscar "Coto Digital"
-3. Clic en ⋮ (tres puntos)
-4. Seleccionar "Recargar"
-```
+Las versiones anteriores no admiten branding incluido dentro de una integración personalizada. Para ellas, el icono debe estar publicado en el repositorio central `home-assistant/brands`, bajo:
 
----
-
-## Dónde Aparecerá el Logo
-
-Una vez configurado, el logo aparecerá en:
-
-✅ **Configuración → Dispositivos y servicios**
-- Card de la integración Coto Digital
-
-✅ **HACS → Integraciones**
-- Listado de integraciones instaladas
-
-✅ **Cards de entidades**
-- Cuando se muestran sensores y botones
-
-✅ **Dashboard de integración**
-- Si usas el dashboard automático
-
----
-
-## Verificación
-
-### Comprobar que los archivos existen
-
-```bash
-# En el servidor de HA
-ls -lh /config/custom_components/coto_digital/icons/
-
-# Debería mostrar:
-# -rw-r--r-- 1 homeassistant homeassistant 17K icon.png
-# -rw-r--r-- 1 homeassistant homeassistant 17K icon@2x.png
+```text
+custom_integrations/coto_digital/
+├── icon.png
+└── icon@2x.png
 ```
 
-### Comprobar formato del icono
+Eso requiere enviar y conseguir la aprobación de un pull request en:
 
-```bash
-file /config/custom_components/coto_digital/icons/icon.png
+https://github.com/home-assistant/brands
 
-# Debería decir:
-# PNG image data, 512 x 512, 8-bit/color RGBA, non-interlaced
-```
+Como alternativa inmediata, actualizar Home Assistant a 2026.3 o posterior.
 
----
+## Referencias oficiales
 
-## Troubleshooting
-
-### El icono sigue sin aparecer
-
-#### 1. Verificar permisos
-
-```bash
-chmod 644 /config/custom_components/coto_digital/icons/*.png
-chown homeassistant:homeassistant /config/custom_components/coto_digital/icons/*.png
-```
-
-#### 2. Verificar estructura de directorios
-
-```bash
-tree /config/custom_components/coto_digital/
-
-# Debe incluir:
-# ├── icons/
-# │   ├── icon.png
-# │   └── icon@2x.png
-```
-
-#### 3. Limpiar caché de HA
-
-```bash
-# Parar HA
-ha core stop
-
-# Limpiar caché
-rm -rf /config/.storage/lovelace*
-rm -rf /config/www/.cache
-
-# Reiniciar
-ha core start
-```
-
-#### 4. Modo incógnito del navegador
-
-Abrir Home Assistant en modo incógnito:
-- `Ctrl + Shift + N` (Chrome)
-- `Ctrl + Shift + P` (Firefox)
-
-Si el icono aparece en incógnito, es problema de caché.
-
-#### 5. Revisar logs
-
-```bash
-grep -i "icon\|coto_digital" /config/home-assistant.log | tail -20
-```
-
-Buscar errores relacionados con:
-- "Failed to load icon"
-- "Icon not found"
-- "Permission denied"
-
----
-
-## Tamaños de Iconos Recomendados
-
-| Archivo | Tamaño | Uso |
-|---------|--------|-----|
-| `icon.png` | 512x512 | Pantallas normales |
-| `icon@2x.png` | 512x512 o 1024x1024 | Pantallas Retina |
-
-**Nuestro logo**: 512x512 en ambos (suficiente para cualquier pantalla)
-
----
-
-## Formato Técnico
-
-**Especificaciones del icono**:
-- Formato: PNG
-- Profundidad: 8-bit RGBA (con transparencia)
-- Tamaño: 512x512 píxeles
-- Peso: ~17KB
-- Optimización: Compresión zlib nivel 9
-
-**Compatible con**:
-- ✅ Home Assistant Core 2023.1+
-- ✅ HACS
-- ✅ Navegadores modernos
-- ✅ Pantallas HD y Retina
-
----
-
-## Resultado Esperado
-
-### Antes
-```
-┌─────────────────────────┐
-│ [?] Coto Digital        │
-│ Icon not available      │
-└─────────────────────────┘
-```
-
-### Después
-```
-┌─────────────────────────┐
-│ [🛒] Coto Digital       │
-│ (logo del carrito rojo) │
-└─────────────────────────┘
-```
-
----
-
-## Alternativa Temporal: Icono MDI
-
-Si el icono custom no carga, puedes usar temporalmente un icono de Material Design:
-
-Editar `manifest.json`:
-```json
-{
-  "domain": "coto_digital",
-  "name": "Coto Digital",
-  "icon": "mdi:cart",
-  ...
-}
-```
-
-Pero **el icono custom es mucho mejor**:
-- ✅ Único y reconocible
-- ✅ Branding de Coto Digital
-- ✅ Más profesional
-- ✅ Colores corporativos
-
----
-
-## Resumen
-
-**Cambios realizados** ✅:
-1. Creado directorio `icons/`
-2. Copiado `logo.png` como `icon.png`
-3. Creado `icon@2x.png` para retina
-4. Actualizado `strings.json`
-5. Documentación en `icons/README.md`
-
-**Para que funcione**:
-1. ✅ Actualizar integración a última versión
-2. ✅ Reiniciar Home Assistant
-3. ✅ Limpiar caché del navegador
-4. ✅ Esperar ~1 minuto
-
-**Tiempo total**: 3-5 minutos
-
-El logo del **carrito minimalista rojo** aparecerá en toda la interfaz de Home Assistant.
+- Anuncio de Brands Proxy API: https://developers.home-assistant.io/blog/2026/02/24/brands-proxy-api
+- Repositorio Home Assistant Brands: https://github.com/home-assistant/brands

@@ -5,6 +5,15 @@ Todos los cambios notables del proyecto están documentados aquí.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y este proyecto adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.4.1] - 2026-08-27
+
+### Corregido
+- Branding local ubicado en la carpeta oficial `custom_components/coto_digital/brand/`.
+- `icon.png` generado en 256x256 píxeles.
+- `icon@2x.png` generado en 512x512 píxeles.
+- Eliminada la carpeta incorrecta `icons/`, que Home Assistant no usa para branding.
+- Documentación corregida para Home Assistant 2026.3 o posterior.
+
 ## [1.4.0] - 2026-08-27
 
 ### Mejorado
