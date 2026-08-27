@@ -5,6 +5,24 @@ Todos los cambios notables del proyecto están documentados aquí.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y este proyecto adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.4.0] - 2026-08-27
+
+### Mejorado
+- Logo completamente rediseñado: minimalista y profesional
+- Diseño flat/material design solo con carrito de compras
+- Reducido a 2 colores: rojo Coto + blanco
+- Líneas limpias y gruesas para mejor legibilidad
+- Sin elementos innecesarios (badges, checks, efectos 3D)
+- Perfecto para HACS store y cualquier tamaño
+- Logo SVG optimizado con formas simples
+
+### Visual
+- Carrito wireframe blanco sobre fondo rojo
+- Manija curva simple
+- Dos ruedas limpias con centro rojo
+- Gradiente radial suave en fondo
+- 17KB PNG optimizado (512x512)
+
 ## [1.3.0] - 2026-08-27
 
 ### Añadido
