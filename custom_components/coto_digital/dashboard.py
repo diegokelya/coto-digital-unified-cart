@@ -143,88 +143,90 @@ service: coto_digital.vaciar_carrito
 async def async_create_dashboard(hass: HomeAssistant) -> bool:
     """Create Lovelace dashboard for Coto Digital."""
     try:
-        # Obtener el dashboard storage
-        lovelace_config = hass.data.get("lovelace")
+        _LOGGER.info("Starting Coto Digital dashboard creation")
         
-        if lovelace_config is None:
-            _LOGGER.warning("Lovelace config not available, skipping dashboard creation")
-            return False
+        # Método simplificado - usar solo storage directo
+        # No depender de lovelace.dashboard que puede no estar disponible
         
-        # URL del dashboard
-        dashboard_url = "coto-digital"
+        url = "coto-digital"
         
         # Verificar si ya existe
-        dashboards = await hass.async_add_executor_job(
-            _get_dashboards, hass
-        )
-        
-        if dashboard_url in dashboards:
-            _LOGGER.info("Dashboard 'coto-digital' already exists, skipping creation")
-            return True
-        
-        # Crear el dashboard
-        await hass.async_add_executor_job(
-            _create_dashboard_storage, hass, dashboard_url
-        )
-        
-        _LOGGER.info("Successfully created Coto Digital dashboard at /lovelace/coto-digital")
-        return True
-        
-    except Exception as err:
-        _LOGGER.error("Failed to create dashboard: %s", err)
-        return False
-
-
-def _get_dashboards(hass: HomeAssistant) -> dict:
-    """Get existing dashboards."""
-    try:
-        from homeassistant.components.lovelace import dashboard
-        return dashboard.LovelaceConfig.async_get_dashboards(hass)
-    except Exception:
-        return {}
-
-
-def _create_dashboard_storage(hass: HomeAssistant, url: str) -> None:
-    """Create dashboard in storage."""
-    try:
-        from homeassistant.components.lovelace import dashboard
         from homeassistant.helpers import storage
-        
-        # Crear configuración del dashboard
-        config = {
-            "mode": "storage",
-            "require_admin": DASHBOARD_CONFIG["require_admin"],
-            "show_in_sidebar": DASHBOARD_CONFIG["show_in_sidebar"],
-            "icon": DASHBOARD_CONFIG["icon"],
-            "title": DASHBOARD_CONFIG["title"],
-            "url_path": url,
-        }
-        
-        # Guardar en storage
         store = storage.Store(hass, 1, f"lovelace.{url}")
         
-        # Crear vista
+        try:
+            existing = await store.async_load()
+            if existing:
+                _LOGGER.info("Dashboard 'coto-digital' already exists, skipping creation")
+                return True
+        except Exception:
+            # No existe, continuar con creación
+            pass
+        
+        # Crear vista del dashboard
         lovelace_data = {
             "views": [DASHBOARD_VIEW],
         }
         
         # Guardar dashboard
-        hass.loop.create_task(store.async_save(lovelace_data))
+        await store.async_save(lovelace_data)
         
-        # Registrar dashboard en frontend
-        if "lovelace" in hass.data:
-            lovelace_config = hass.data["lovelace"]
-            if hasattr(lovelace_config, "_dashboards"):
-                lovelace_config._dashboards[url] = dashboard.LovelaceDashboard(
-                    hass=hass,
-                    url_path=url,
-                    **config
-                )
+        _LOGGER.info("Successfully created Coto Digital dashboard at /lovelace/coto-digital")
+        _LOGGER.info("Dashboard will be available after Home Assistant restart")
         
-        _LOGGER.info("Dashboard storage created successfully")
+        # Intentar registrar en lovelace_dashboards (opcional)
+        try:
+            await _register_dashboard(hass, url)
+        except Exception as err:
+            _LOGGER.warning("Could not register dashboard in sidebar (will still be accessible): %s", err)
+        
+        return True
         
     except Exception as err:
-        _LOGGER.error("Error creating dashboard storage: %s", err)
+        _LOGGER.error("Failed to create dashboard: %s", err, exc_info=True)
+        return False
+
+
+async def _register_dashboard(hass: HomeAssistant, url: str) -> None:
+    """Register dashboard in lovelace_dashboards for sidebar visibility."""
+    try:
+        from homeassistant.helpers import storage
+        
+        store = storage.Store(hass, 1, "lovelace_dashboards")
+        
+        # Cargar dashboards existentes
+        data = await store.async_load()
+        
+        if data is None:
+            data = {"items": []}
+        
+        items = data.get("items", [])
+        
+        # Verificar si ya existe
+        if any(item.get("url_path") == url for item in items):
+            _LOGGER.debug("Dashboard already registered in sidebar")
+            return
+        
+        # Agregar nuevo dashboard
+        from datetime import datetime
+        new_dashboard = {
+            "id": f"coto_digital_{datetime.now().strftime('%Y%m%d%H%M%S')}",
+            "url_path": url,
+            "require_admin": False,
+            "show_in_sidebar": True,
+            "icon": "mdi:cart",
+            "title": "Coto Digital",
+        }
+        
+        items.append(new_dashboard)
+        data["items"] = items
+        
+        await store.async_save(data)
+        
+        _LOGGER.info("Dashboard registered in sidebar")
+        
+    except Exception as err:
+        _LOGGER.warning("Failed to register dashboard: %s", err)
 
 
 async def async_remove_dashboard(hass: HomeAssistant) -> bool:
@@ -238,11 +240,17 @@ async def async_remove_dashboard(hass: HomeAssistant) -> bool:
         # Eliminar del storage
         await store.async_remove()
         
-        # Eliminar del registro
-        if "lovelace" in hass.data:
-            lovelace_config = hass.data["lovelace"]
-            if hasattr(lovelace_config, "_dashboards") and url in lovelace_config._dashboards:
-                del lovelace_config._dashboards[url]
+        # Eliminar del registro de dashboards
+        try:
+            dashboards_store = storage.Store(hass, 1, "lovelace_dashboards")
+            data = await dashboards_store.async_load()
+            
+            if data and "items" in data:
+                items = data["items"]
+                data["items"] = [item for item in items if item.get("url_path") != url]
+                await dashboards_store.async_save(data)
+        except Exception:
+            pass  # No crítico si falla
         
         _LOGGER.info("Successfully removed Coto Digital dashboard")
         return True
