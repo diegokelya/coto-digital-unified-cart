@@ -1,8 +1,15 @@
 # Coto Digital para Home Assistant
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
-[![GitHub Release](https://img.shields.io/github/release/diegokelya/coto-digital-unified-cart.svg)](https://github.com/diegokelya/coto-digital-unified-cart/releases)
-[![License](https://img.shields.io/github/license/diegokelya/coto-digital-unified-cart.svg)](LICENSE)
+<p align="center">
+  <img src="logo.png" alt="Coto Digital Logo" width="200"/>
+</p>
+
+<p align="center">
+  <a href="https://github.com/hacs/integration"><img src="https://img.shields.io/badge/HACS-Custom-41BDF5.svg" alt="HACS"></a>
+  <a href="https://github.com/diegokelya/coto-digital-unified-cart/releases"><img src="https://img.shields.io/github/release/diegokelya/coto-digital-unified-cart.svg" alt="GitHub Release"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/diegokelya/coto-digital-unified-cart.svg" alt="License"></a>
+  <img src="https://img.shields.io/badge/country-AR-blue.svg" alt="Argentina">
+</p>
 
 Integración completa de Coto Digital para Home Assistant. Gestiona tu carrito de compras, busca productos y automatiza tus compras desde Home Assistant.
 
