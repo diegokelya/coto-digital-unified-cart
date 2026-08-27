@@ -1,0 +1,61 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# Base de datos SQLite
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# Variables de entorno
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Hermes local data
+.hermes/
+
+# Credenciales y tokens
+*token*
+*secret*
+credentials.json
+
+# Chrome extension (empaquetado)
+extension.crx
+extension.pem
+
+# Node modules (si se añaden en el futuro)
+node_modules/
+
+# Temporal
+tmp/
+temp/
+*.tmp
+
+# Backups
+*.bak
+*.backup

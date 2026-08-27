@@ -1,0 +1,27 @@
+[Unit]
+Description=Bot de Telegram para Coto Digital
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=diego
+WorkingDirectory=/home/diego
+EnvironmentFile=/home/diego/.hermes/.env
+ExecStart=/usr/bin/python3 /home/diego/.hermes/scripts/coto_telegram_bot.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=coto-bot
+
+# Límites de recursos
+MemoryMax=512M
+CPUQuota=50%
+
+# Seguridad
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

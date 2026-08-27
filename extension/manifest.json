@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Hermes — Cargador de carrito Coto",
+  "version": "1.0.0",
+  "description": "Carga en Coto Digital el carrito preparado en el dashboard local de Hermes.",
+  "permissions": ["storage", "tabs"],
+  "background": { "service_worker": "background.js" },
+  "content_scripts": [
+    {
+      "matches": ["http://192.168.68.118:8766/*"],
+      "js": ["dashboard.js"],
+      "run_at": "document_start",
+      "all_frames": true
+    },
+    {
+      "matches": ["https://www.coto.com.ar/*", "https://www.cotodigital.com.ar/*"],
+      "js": ["coto.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
