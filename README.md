@@ -362,6 +362,13 @@ Content-Type: application/json
 POST /api/sincronizar
 ```
 
+## Documentación
+
+- **[INSTALLATION.md](docs/INSTALLATION.md)** - Guía completa de instalación
+- **[ACTUALIZACION.md](docs/ACTUALIZACION.md)** - Cómo actualizar a nuevas versiones
+- **[SETUP.md](docs/SETUP.md)** - Configuración de componentes standalone
+- **[DASHBOARD_VALIDATION.md](DASHBOARD_VALIDATION.md)** - Troubleshooting del dashboard
+
 ## Desarrollo
 
 ### Estructura del proyecto
