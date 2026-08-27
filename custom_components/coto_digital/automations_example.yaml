@@ -1,0 +1,96 @@
+# Automatizaciones ejemplo para Coto Digital
+
+# Recordatorio diario de compras
+- alias: "Recordar hacer compras Coto Digital"
+  description: "Notifica a las 19:00 si hay productos en el carrito"
+  trigger:
+    - platform: time
+      at: "19:00:00"
+  condition:
+    - condition: numeric_state
+      entity_id: sensor.coto_digital_productos
+      above: 0
+  action:
+    - service: notify.mobile_app_iphone_de_diego
+      data:
+        title: "🛒 Carrito Coto Digital"
+        message: >
+          Tienes {{ states('sensor.coto_digital_productos') }} productos
+          ({{ states('sensor.coto_digital_unidades') }} unidades)
+          por un total de ${{ states('sensor.coto_digital_total') }}
+
+# Alerta de carrito grande
+- alias: "Alerta carrito grande Coto Digital"
+  description: "Notifica cuando el carrito supera $50.000"
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.coto_digital_total
+      above: 50000
+  action:
+    - service: notify.mobile_app_iphone_de_diego
+      data:
+        title: "⚠️ Carrito Grande"
+        message: "Tu carrito de Coto Digital supera los $50.000"
+
+# Sincronización automática diaria
+- alias: "Sincronizar Coto Digital automáticamente"
+  description: "Sincroniza con Coto Digital cada 6 horas"
+  trigger:
+    - platform: time_pattern
+      hours: "/6"
+  action:
+    - service: button.press
+      target:
+        entity_id: button.sincronizar_coto_digital
+
+# Notificación cuando se agrega producto
+- alias: "Notificar producto agregado a Coto"
+  description: "Notifica cuando se dispara evento de carrito actualizado"
+  trigger:
+    - platform: event
+      event_type: coto_digital_carrito_actualizado
+  action:
+    - service: notify.mobile_app_iphone_de_diego
+      data:
+        message: "Carrito Coto actualizado: ${{ states('sensor.coto_digital_total') }}"
+
+# Recordatorio semanal si el carrito está vacío mucho tiempo
+- alias: "Recordar buscar productos Coto"
+  description: "Si hace una semana que no hay productos, recordar buscar"
+  trigger:
+    - platform: time
+      at: "10:00:00"
+    - platform: time
+      at: "18:00:00"
+  condition:
+    - condition: numeric_state
+      entity_id: sensor.coto_digital_productos
+      below: 1
+    - condition: template
+      value_template: >
+        {{ (now() - states.sensor.coto_digital_productos.last_changed).days > 7 }}
+  action:
+    - service: notify.mobile_app_iphone_de_diego
+      data:
+        title: "🛒 Coto Digital"
+        message: "Hace tiempo que no agregas productos al carrito"
+
+# Búsqueda automática de productos favoritos
+- alias: "Buscar productos favoritos en Coto"
+  description: "Busca leche y pan cada lunes"
+  trigger:
+    - platform: time
+      at: "08:00:00"
+  condition:
+    - condition: time
+      weekday:
+        - mon
+  action:
+    - service: coto_digital.buscar_producto
+      data:
+        query: "leche la serenisima"
+    - delay:
+        seconds: 2
+    - service: coto_digital.buscar_producto
+      data:
+        query: "pan lactal"

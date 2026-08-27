@@ -1,0 +1,138 @@
+# Dashboard YAML para Coto Digital
+# Copiar este contenido en Configuración > Dashboards > Editar Dashboard > Vista YAML
+
+title: Coto Digital
+path: coto-digital
+icon: mdi:cart
+badges: []
+cards:
+  # Header con estadísticas
+  - type: vertical-stack
+    cards:
+      - type: markdown
+        content: |
+          # 🛒 Coto Digital
+          ## Tu carrito de compras
+      - type: horizontal-stack
+        cards:
+          - type: entity
+            entity: sensor.coto_digital_productos
+            name: Productos
+            icon: mdi:cart-variant
+          - type: entity
+            entity: sensor.coto_digital_unidades
+            name: Unidades
+            icon: mdi:package-variant
+          - type: entity
+            entity: sensor.coto_digital_total
+            name: Total
+            icon: mdi:currency-usd
+
+  # Botones de acción
+  - type: entities
+    title: Acciones
+    entities:
+      - entity: button.sincronizar_coto_digital
+        name: Sincronizar con Coto Digital
+        icon: mdi:sync
+      - entity: button.vaciar_carrito_coto_digital
+        name: Vaciar Carrito
+        icon: mdi:delete-empty
+
+  # Gráfico de total
+  - type: history-graph
+    title: Historial de Total
+    entities:
+      - entity: sensor.coto_digital_total
+    hours_to_show: 168
+
+  # Gauge de progreso
+  - type: gauge
+    entity: sensor.coto_digital_total
+    name: Total del Carrito
+    min: 0
+    max: 100000
+    needle: true
+    severity:
+      green: 0
+      yellow: 30000
+      red: 70000
+
+  # Servicios disponibles
+  - type: markdown
+    content: |
+      ## Servicios Disponibles
+
+      ### Buscar Producto
+      ```yaml
+      service: coto_digital.buscar_producto
+      data:
+        query: "leche"
+      ```
+
+      ### Agregar al Carrito
+      ```yaml
+      service: coto_digital.agregar_al_carrito
+      data:
+        producto_id: "prod_123"
+        nombre: "Leche La Serenísima 1L"
+        precio: 450.50
+        cantidad: 2
+        imagen_url: "https://..."
+      ```
+
+      ### Eliminar del Carrito
+      ```yaml
+      service: coto_digital.eliminar_del_carrito
+      data:
+        producto_id: "prod_123"
+      ```
+
+      ### Vaciar Carrito
+      ```yaml
+      service: coto_digital.vaciar_carrito
+      ```
+
+      ### Sincronizar
+      ```yaml
+      service: coto_digital.sincronizar
+      ```
+
+  # Ejemplo de automatización
+  - type: markdown
+    content: |
+      ## Ejemplo de Automatización
+
+      ### Recordatorio diario si hay productos
+      ```yaml
+      automation:
+        - alias: "Recordar compras Coto"
+          trigger:
+            - platform: time
+              at: "19:00:00"
+          condition:
+            - condition: numeric_state
+              entity_id: sensor.coto_digital_productos
+              above: 0
+          action:
+            - service: notify.mobile_app_iphone_de_diego
+              data:
+                title: "Carrito Coto Digital"
+                message: >
+                  Tienes {{ states('sensor.coto_digital_productos') }} productos
+                  por un total de ${{ states('sensor.coto_digital_total') }}
+      ```
+
+      ### Alerta de carrito grande
+      ```yaml
+      automation:
+        - alias: "Alerta carrito grande"
+          trigger:
+            - platform: numeric_state
+              entity_id: sensor.coto_digital_total
+              above: 50000
+          action:
+            - service: notify.mobile_app_iphone_de_diego
+              data:
+                message: "Tu carrito de Coto supera los $50.000"
+      ```

@@ -27,6 +27,7 @@ from .const import (
     ATTR_CANTIDAD,
 )
 from .coto_api import CotoDigitalAPI
+from .dashboard import async_create_dashboard, async_remove_dashboard
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -71,6 +72,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     
     # Cargar plataformas
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    
+    # Crear dashboard automáticamente
+    await async_create_dashboard(hass)
     
     # Registrar servicios
     async def handle_buscar(call: ServiceCall) -> None:
@@ -159,5 +163,8 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             hass.services.async_remove(DOMAIN, SERVICE_ELIMINAR)
             hass.services.async_remove(DOMAIN, SERVICE_VACIAR)
             hass.services.async_remove(DOMAIN, SERVICE_SINCRONIZAR)
+            
+            # Remover dashboard (opcional - comentar si se quiere mantener)
+            # await async_remove_dashboard(hass)
     
     return unload_ok
