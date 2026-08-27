@@ -307,7 +307,7 @@ journalctl --user -u coto-dashboard-web -f
 
 ```bash
 # Acceder al dashboard
-http://192.168.68.118:8766/
+http://homeassistant.local:8766/
 
 # Buscar productos
 # Agregar al carrito
@@ -332,7 +332,7 @@ http://192.168.68.118:8766/
 2. Buscar productos
 3. La extensión captura automáticamente productos visibles
 4. Clic en ícono → "Importar al Dashboard"
-5. Productos aparecen en `http://192.168.68.118:8766/`
+5. Productos aparecen en `http://homeassistant.local:8766/`
 
 ## API REST
 
@@ -398,7 +398,7 @@ coto-digital-unified-cart/
 
 ```bash
 # Verificar dashboard
-curl http://192.168.68.118:8766/api/carrito
+curl http://homeassistant.local:8766/api/carrito
 
 # Test de búsqueda
 python3 src/coto_digital_bot.py

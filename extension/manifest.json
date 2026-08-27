@@ -7,7 +7,7 @@
   "background": { "service_worker": "background.js" },
   "content_scripts": [
     {
-      "matches": ["http://192.168.68.118:8766/*"],
+      "matches": ["http://homeassistant.local:8766/*", "http://localhost:8766/*"],
       "js": ["dashboard.js"],
       "run_at": "document_start",
       "all_frames": true

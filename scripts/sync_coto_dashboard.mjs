@@ -61,7 +61,7 @@ function leerCarrito() {
 function generarDashboard(productos) {
   return [{
     type: 'iframe',
-    url: 'http://192.168.68.118:8766/',
+    url: 'http://homeassistant.local:8766/',
     aspect_ratio: '150%'
   }];
 }

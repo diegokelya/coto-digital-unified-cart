@@ -46,7 +46,7 @@ ws.on('message', raw => {
       views: views.length,
       cards: cards.length,
       iframe_url: iframe?.url || null,
-      interactive: iframe?.url === 'http://192.168.68.118:8766/',
+      interactive: iframe?.url === 'http://homeassistant.local:8766/',
       expected_image_present: expectedImage ? markdown.includes(expectedImage) : null
     };
     console.log(JSON.stringify(result));
